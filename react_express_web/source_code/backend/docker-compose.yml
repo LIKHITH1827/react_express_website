@@ -1,0 +1,37 @@
+services:
+  mongo_db:
+    container_name: mongo_container
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo_db:/data/db
+
+  express:
+    build: .
+    ports:
+      - 3005:3005
+    volumes:
+      - .:/usr/src/app
+    environment:
+      PORT: 3005
+      MONGODB_URI: mongodb://mongo_container:27017
+      DB_NAME: task3
+    depends_on:
+      - mongo_db
+  
+  # caddy:
+  #   image: caddy:latest
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - $PWD/Caddyfile:/etc/caddy/Caddyfile
+  #     - caddy_data:/data
+  #     - caddy_config:/config
+  #   depends_on:
+  #     - express
+
+volumes:
+  mongo_db: {}
+  # caddy_data:
+  # caddy_config:
